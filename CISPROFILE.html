@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      scroll-behavior: smooth; /* smooth scroll */
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #7A6C5D;
+      padding: 15px 0;
+      z-index: 1000;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-weight: bold;
+      color: white;
+      position: relative;
+      padding-bottom: 5px;
+    }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background: #DDC9B4;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 100px 20px;
+    }
+
+    #home { background: #BCAC9B; }
+    #about { background: #ddd; }
+    #projects { background: #555; color: white; }
+    #contact { background: #333; color: white; }
+
+    .subsection {
+      padding: 50px 20px;
+      background: #bbb;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="home"><h1>Home</h1></section>
+
+  <section id="about">
+    <h1>About</h1>
+    <div id="mission" class="subsection"><h2>Mission & Vision</h2></div>
+    <div id="goals" class="subsection"><h2>Our Goals</h2></div>
+    <div id="team" class="subsection"><h2>Meet Our Team</h2></div>
+  </section>
+
+  <section id="projects"><h1>Projects</h1></section>
+  <section id="contact"><h1>Contact</h1></section>
+
+  <script>
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll("nav a");
+
+    window.addEventListener("scroll", () => {
+      let current = "";
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+          current = section.getAttribute("id");
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === "#" + current) {
+          link.classList.add("active");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
