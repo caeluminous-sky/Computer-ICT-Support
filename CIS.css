@@ -1,0 +1,93 @@
+@font-face {
+    font-family: BrotherSignature;
+    src: url(FONTS/BrotherSignature-7BWnK.otf);
+}
+@font-face {
+    font-family: Comfortaa;
+    src: url(FONTS/Comfortaa-YJnL.ttf);
+}
+@font-face {
+    font-family: ComfortaaBold;
+    src: url(FONTS/ComfortaaBold-rmEK.ttf);
+}
+@font-face {
+    font-family: ComfortaaLight;
+    src: url(FONTS/ComfortaaLight-MJ0v.ttf);
+}
+@font-face {
+    font-family: MomcakeThin;
+    src: url(FONTS/MomcakeThin-9Y6aZ.otf);
+}
+@font-face {
+    font-family: MomcakeBold;
+    src: url(FONTS/MomcakeBold-WyonA.otf);
+}
+
+body {
+    font-family: ComfortaaBold;
+    position: relative;
+}
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+header a {
+    color: white;
+    text-decoration: none;
+}
+section {
+    padding: 100px 20px;
+    height: 100vh;
+}
+#navbar {
+    background-color: #7a6c5d;
+    color: #ddc9b4;
+}
+.navbar-brand img {
+    height: 40px;
+    object-fit: contain;
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.navbar-brand img {
+    height: 40px;
+    object-fit: contain;
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.brand-computer {
+    font-family: 'BrotherSignature';
+    font-size: 1.3rem;
+    margin-right: 4px;
+    color: #ddc9b4;
+}
+.brand-ict {
+    font-family: 'MomcakeBold';
+    font-size: 1.3rem;
+    color: #ddc9b4;
+}
+.nav-link {
+    color: #ddc9b4;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: background 0.2s, border 0.2s, color 0.2s;
+    margin-right: 12px; 
+}
+.nav-link:hover, .nav-link.active {
+    background: #ddc9b488;
+    color: #7a6c5d; 
+    border: 1px solid #7a6c5d;
+}
+
+
+
+
+
+
+
