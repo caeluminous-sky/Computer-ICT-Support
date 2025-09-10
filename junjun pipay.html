@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Profile Showcase</title>
+<style>
+  :root{
+    --bg:#2f1f19; /* brown/black theme */
+    --panel:#47302a;
+    --muted: rgba(0,0,0,0.45);
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#3f2c25);font-family:Inter,Segoe UI,system-ui,Arial,sans-serif;color:#fff}
+  .stage{
+    height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:3rem;
+  }
+
+  .row{
+    display:flex;gap:2rem;align-items:center;justify-content:center;width:100%;max-width:1200px;position:relative;
+  }
+
+  .profile{
+    --size:160px;
+    width:var(--size);height:var(--size);
+    border-radius:50%;
+    overflow:hidden;
+    flex:0 0 var(--size);
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,#6b4f46,#8d6e63);
+    border:6px solid transparent;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    transition: transform 450ms cubic-bezier(.2,.9,.25,1), box-shadow 450ms, filter 400ms, opacity 300ms;
+    cursor:pointer;
+    position:relative;
+    z-index:2;
+  }
+
+  .profile img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
+
+  /* colored outlines */
+  .profile[data-index="0"]{ border-color:#b85a38; }
+  .profile[data-index="1"]{ border-color:#b89b5a; }
+  .profile[data-index="2"]{ border-color:#8a6d3b; }
+  .profile[data-index="3"]{ border-color:#6f4d3c; }
+  .profile[data-index="4"]{ border-color:#a77fb3; }
+
+  /* hover scale (only hover) */
+  .profile:not(.centered):hover{
+    transform: scale(1.12) rotate(-4deg);
+    box-shadow: 0 18px 48px rgba(0,0,0,0.5), 0 0 36px rgba(255,255,255,0.03) inset;
+  }
+
+  /* dim / blur other items when one active */
+  .row.dimmed .profile:not(.centered){
+    filter: blur(3px) grayscale(.35) brightness(.8);
+    opacity:.55;
+    transform:none !important;
+    pointer-events:none;
+    transition: filter 400ms, opacity 400ms;
+    z-index:1;
+  }
+
+  /* centered profile (moved by JS using translate) */
+  .profile.centered{
+    z-index:120;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.7), 0 0 80px rgba(255,255,255,0.04) inset;
+    transition: transform 900ms cubic-bezier(.22,.9,.32,1), box-shadow 900ms;
+  }
+
+  /* details bubble below centered profile */
+  .details{
+    position:absolute;
+    left:50%; top:55%;
+    transform:translate(-50%, 18px) scale(.96);
+    background:linear-gradient(180deg, rgba(60,45,40,0.95), rgba(50,34,30,0.9));
+    border-radius:12px;
+    padding:18px 22px;
+    min-width:260px;
+    text-align:center;
+    color:#fdeee3;
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    opacity:0;pointer-events:none;
+    transition: opacity 500ms cubic-bezier(.22,.9,.32,1), transform 500ms;
+    z-index:130;
+    backdrop-filter: blur(6px);
+  }
+  .details.show{ opacity:1; transform:translate(-50%, 0) scale(1); pointer-events:auto }
+
+  /* subtle accent heading in details */
+  .details h3{margin:0 0 6px;font-size:1.05rem;color:#fff}
+  .details p{margin:0;font-size:.95rem;color:#f7e7df;line-height:1.35}
+
+  /* overlay backdrop blur (covers stage) when active */
+  .backdrop{
+    position:absolute;inset:0;z-index:60;pointer-events:none;
+    transition: backdrop-filter 600ms cubic-bezier(.22,.9,.32,1), background 600ms;
+    backdrop-filter: none;
+    background:transparent;
+  }
+  .backdrop.active{
+    backdrop-filter: blur(6px) saturate(120%);
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+    pointer-events:auto;
+  }
+
+  /* typing cursor */
+  .typing::after{
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 8px;
+    background: #fdeee3;
+    vertical-align: bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* responsiveness */
+  @media (max-width:900px){
+    .profile{ --size:120px; }
+    .details{ min-width:200px;padding:12px 16px;font-size:.95rem}
+  }
+  @media (max-width:520px){
+    .row{gap:1rem;flex-wrap:nowrap;overflow-x:auto;padding-bottom:1rem}
+    .profile{ --size:100px; flex:0 0 auto }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="row" id="row">
+      <div class="profile" data-index="0" data-detail="Alex Morgan — Product Designer. Loves UX, coffee, and mountain hikes.">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80&auto=format&fit=crop" alt="Alex">
+      </div>
+      <div class="profile" data-index="1" data-detail="Jamie Lee — Frontend Engineer. React fan, runs marathons.">
+        <img src="https://images.unsplash.com/photo-1545996124-1b7a6d6b6eef?w=800&q=80&auto=format&fit=crop" alt="Jamie">
+      </div>
+      <div class="profile" data-index="2" data-detail="Samir Khan — Backend Lead. Database whisperer & tea enthusiast.">
+        <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=800&q=80&auto=format&fit=crop" alt="Samir">
+      </div>
+      <div class="profile" data-index="3" data-detail="Rosa Diaz — Data Scientist. Visualization lover and ceramic artist.">
+        <img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=800&q=80&auto=format&fit=crop" alt="Rosa">
+      </div>
+      <div class="profile" data-index="4" data-detail="Leo Park — Mobile Developer. Coffee, pixels, and good music.">
+        <img src="https://images.unsplash.com/photo-1546456073-6712f79251bb?w=800&q=80&auto=format&fit=crop" alt="Leo">
+      </div>
+
+      <div class="backdrop" id="backdrop"></div>
+      <div class="details" id="details"><h3 id="name">Name</h3><p id="bio">Bio goes here</p></div>
+    </div>
+  </div>
+
+<script>
+  (() => {
+    const row = document.getElementById('row');
+    const profiles = Array.from(row.querySelectorAll('.profile'));
+    const details = document.getElementById('details');
+    const nameEl = document.getElementById('name');
+    const bioEl = document.getElementById('bio');
+    const backdrop = document.getElementById('backdrop');
+
+    let active = null;
+    let persistent = false; // touch/click keeps it
+    let typingTimers = [];
+    let typingAbort = false;
+    let autoReturnTimer = null; // new: auto-return timer
+
+    function centerCoords(){
+      const r = row.getBoundingClientRect();
+      return { x: r.left + r.width/2, y: r.top + r.height/2 };
+    }
+
+    async function activate(profileEl, keep=false){
+      if(!profileEl) return;
+      const rect = profileEl.getBoundingClientRect();
+      const center = centerCoords();
+      // target center point slightly above vertical center
+      const targetX = center.x;
+      const targetY = center.y - 60;
+
+      const elCenterX = rect.left + rect.width/2;
+      const elCenterY = rect.top + rect.height/2;
+
+      const dx = Math.round(targetX - elCenterX);
+      const dy = Math.round(targetY - elCenterY);
+
+      // cancel any pending auto-return from previous activation
+      if(autoReturnTimer){ clearTimeout(autoReturnTimer); autoReturnTimer = null; }
+
+      // reset transforms first to compute accurate transition
+      profiles.forEach(p => p.classList.remove('centered'));
+      // apply transform via inline style for smooth absolute-like move
+      profileEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.45)`;
+      profileEl.classList.add('centered');
+
+      // dim others
+      row.classList.add('dimmed');
+      backdrop.classList.add('active');
+
+      // show details container first (but text will be typed)
+      details.style.left = '50%';
+      // place details close under the profile (smaller offset)
+      details.style.top = (targetY + (rect.height / 2) + 12) + 'px';
+      details.classList.add('show');
+
+      // typing effect helpers
+      abortTyping();
+      const title = profileEl.querySelector('img').alt || 'Profile';
+      const bio = profileEl.dataset.detail || '';
+      try{
+        await typeText(nameEl, title, 40);           // type title
+        await wait(140);                             // short pause
+        await typeText(bioEl, bio, 18);              // type bio
+      }catch(e){
+        // typing aborted or other error -> fallback to set immediately
+        nameEl.textContent = title;
+        bioEl.textContent = bio;
+      }
+
+      // auto-return to original position 1 second after typing finished
+      if(autoReturnTimer){ clearTimeout(autoReturnTimer); }
+      // auto-return 0.5s after typing finished
+      autoReturnTimer = setTimeout(()=> {
+        // only auto-deactivate if still the same active element
+        if(active === profileEl) deactivate();
+      }, 500);
+
+      active = profileEl;
+      persistent = !!keep;
+
+      // ensure active profile is above everything visually
+      profileEl.style.zIndex = 200;
+    }
+
+    function deactivate(){
+      if(!active) return;
+      // restore transform & classes
+      active.style.transform = '';
+      active.classList.remove('centered');
+      active.style.zIndex = '';
+      active = null;
+      persistent = false;
+      row.classList.remove('dimmed');
+      backdrop.classList.remove('active');
+      details.classList.remove('show');
+      abortTyping();
+      nameEl.textContent = '';
+      bioEl.textContent = '';
+      if(autoReturnTimer){ clearTimeout(autoReturnTimer); autoReturnTimer = null; }
+    }
+
+    // typing utilities
+    function wait(ms){ return new Promise(r => { const t = setTimeout(r, ms); typingTimers.push(t); }); }
+    function abortTyping(){
+      typingAbort = true;
+      typingTimers.forEach(t => clearTimeout(t));
+      typingTimers = [];
+      typingAbort = false;
+      nameEl.classList.remove('typing');
+      bioEl.classList.remove('typing');
+      if(autoReturnTimer){ clearTimeout(autoReturnTimer); autoReturnTimer = null; }
+    }
+    async function typeText(el, text, speed=30){
+      el.textContent = '';
+      el.classList.add('typing');
+      for(let i=0; i<= text.length; i++){
+        if(typingAbort) throw new Error('aborted');
+        el.textContent = text.slice(0, i);
+        await wait(speed + Math.random()*25);
+      }
+      el.classList.remove('typing');
+    }
+    
+    // Hover is purely visual via CSS (.profile:not(.centered):hover).
+    // Only click/touch triggers the persistent center activation.
+    profiles.forEach(p=>{
+      p.addEventListener('touchstart', (ev)=>{
+        ev.preventDefault();
+        if(active === p && persistent){ deactivate(); return; }
+        activate(p, true);
+      }, {passive:false});
+
+      p.addEventListener('click',(ev)=>{
+        ev.preventDefault();
+        if(active === p && persistent){ deactivate(); return; }
+        activate(p, true);
+      });
+    });
+
+    // clicking/tapping outside deactivates persistent
+    document.addEventListener('click', (e)=>{
+      if(!e.target.closest('.profile')){
+        deactivate();
+      }
+    });
+    document.addEventListener('touchstart', (e)=>{
+      if(!e.target.closest('.profile')){
+        deactivate();
+      }
+    });
+
+    // on resize, if one active, recompute transform to center (keeps smooth)
+    window.addEventListener('resize', ()=>{
+      if(active){
+        // re-activate using current active to recompute dx/dy
+        const a = active;
+        // clear inline temporarily to get refs
+        a.style.transform = '';
+        setTimeout(()=> activate(a, persistent), 8);
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
