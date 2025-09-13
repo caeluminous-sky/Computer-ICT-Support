@@ -1,10 +1,10 @@
-// Navbar ScrollSpy
+
 new bootstrap.ScrollSpy(document.body, {
   target: '#navbarNav',
   offset: 50,
 });
 
-// Adjust home height
+
 function adjustHomeHeight() {
   const navbar = document.querySelector('.navbar');
   const home = document.querySelector('#home');
@@ -16,7 +16,7 @@ function adjustHomeHeight() {
 window.addEventListener('load', adjustHomeHeight);
 window.addEventListener('resize', adjustHomeHeight);
 
-// About ScrollSpy
+
 const scrollElement = document.querySelector('.about-content');
 new bootstrap.ScrollSpy(scrollElement, {
   target: '#aboutNav',
